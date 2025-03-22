@@ -1,4 +1,5 @@
 import prefect
+from core import DATABASE_URL
 from prefect import flow
 from extraction.api_extraction import extract_api_data
 from extraction.opendata_extraction import extract_open_data
