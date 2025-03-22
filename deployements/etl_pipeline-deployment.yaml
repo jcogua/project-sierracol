@@ -1,0 +1,13 @@
+name: petroleum-energy-pipeline-deployment
+flow_name: Petroleum-Energy-Pipeline
+schedule:
+  cron: "0 7 * * *"   # Ejecuta todos los días a las 7am UTC (ajustable)
+  timezone: UTC
+infrastructure:
+  type: process
+work_queue_name: petroleum-queue
+tags:
+  - petroleum
+  - energy
+  - etl
+parameters: {}

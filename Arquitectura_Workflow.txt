@@ -1,0 +1,51 @@
+# Arquitectura del Proyecto: Pipeline de datos en la nube con Prefect Cloud
+
+## ✅ Visión general de la arquitectura:
+
+### 1. Orquestación
+- **Prefect Cloud**: Todo el pipeline estará registrado y desplegado en Prefect Cloud.
+- Los flujos se podrán ejecutar de manera manual o automática desde la nube.
+- Las ejecuciones estarán asociadas a un agente en la nube o local (proceso ligero que escuchará las ejecuciones desde Prefect Cloud).
+
+### 2. Fuentes de datos
+- **API Pública (EIA)**: Extracción automatizada desde la API pública de la U.S. Energy Information Administration.
+- **Dataset Open Data**: Archivo `owid-energy-data.xlsx` subido al repositorio y almacenado en `/data`.
+
+### 3. Base de datos
+- **PostgreSQL en Aiven**: La base de datos estará provisionada en la nube (Aiven), con tablas para las dos fuentes de datos.
+- La conexión será gestionada mediante SQLAlchemy y definida en un archivo `config/database.yaml`.
+
+### 4. Repositorio Git (GitHub o GitLab)
+- Toda la estructura del proyecto estará versionada:
+  - `flows/` para los flujos ETL.
+  - `deployments/` para los archivos YAML de despliegue.
+  - `config/` para configuraciones.
+  - `dashboards/` para visualizaciones.
+  - `README.md` con instrucciones claras.
+
+### 5. Automatización
+- La ejecución de los pipelines estará programada con Prefect Cloud usando `cron schedules`.
+- Se podrá configurar notificaciones (Slack, Email o Teams) desde Prefect Cloud en caso de errores.
+
+### 6. Visualización
+- Conexión desde Power BI o Grafana a la base de datos en Aiven.
+- Dashboard dinámico con métricas clave: precios del petróleo, tendencias históricas, comparación entre fuentes.
+
+### 7. Reproducibilidad
+- Al clonar el proyecto, cualquier persona podrá:
+  - Instalar dependencias con `pip install -r requirements.txt`.
+  - Configurar variables de entorno y el archivo `database.yaml`.
+  - Ejecutar flujos localmente o registrarlos en Prefect Cloud.
+  - Visualizar los datos con dashboards conectados.
+
+## ✅ Arquitectura en esquema:
+```
+API Pública (EIA)   ->  Prefect Flow  -> Transformación -> PostgreSQL (Aiven)
+Open Data (Excel)   ->  Prefect Flow  -> Transformación -> PostgreSQL (Aiven)
+
+PostgreSQL (Aiven)  -> Power BI / Grafana (visualización en la nube)
+
+Orquestación y monitoreo centralizado desde Prefect Cloud.
+```
+
+Si quieres, te puedo armar un diagrama visual (con diagramas de arquitectura) en formato imagen para tu documentación. ¿Quieres que lo genere? 😎
