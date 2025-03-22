@@ -2,8 +2,13 @@ from prefect import flow, task
 import pandas as pd
 import requests
 import sqlalchemy
-import yaml
-import os
+from core import DATABASE_URL, API_KEY, API_BASE_URL, DATE
+
+# Validar que las variables de entorno estén cargadas
+if not DATABASE_URL:
+    raise EnvironmentError("DATABASE_URL no está definido. Verifica las variables de entorno.")
+if not API_KEY:
+    raise EnvironmentError("API_KEY no está definido. Verifica las variables de entorno.")
 
 @task
 def extract_excel():
@@ -13,9 +18,9 @@ def extract_excel():
 
 @task
 def extract_api():
-    api_key = os.getenv("API_KEY")
-    url = f"https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key={api_key}&data[0]=value&frequency=daily&start=2023-01-01"
+    url = f"{API_BASE_URL}?api_key={API_KEY}&data[0]=value&frequency=daily&start={DATE}"
     response = requests.get(url)
+    response.raise_for_status()
     data = response.json()
     df = pd.DataFrame(data['response']['data'])
     print(f"✅ Extraídos {len(df)} registros desde API EIA.")
@@ -25,15 +30,13 @@ def extract_api():
 def transform_data(df_excel, df_api):
     df_excel_clean = df_excel.dropna(subset=['year', 'country'])
     df_excel_clean = df_excel_clean[df_excel_clean['year'] >= 2000]
-    df_api_clean = df_api[['period', 'value']]
-    df_api_clean.rename(columns={'period': 'date', 'value': 'price_usd'}, inplace=True)
+    df_api_clean = df_api[['period', 'value']].rename(columns={'period': 'date', 'value': 'price_usd'})
     print("✅ Transformaciones completadas.")
     return df_excel_clean, df_api_clean
 
 @task
 def load_to_postgres(df_excel, df_api):
-    db_url = os.getenv("DATABASE_URL")
-    engine = sqlalchemy.create_engine(db_url)
+    engine = sqlalchemy.create_engine(DATABASE_URL)
     df_excel.to_sql("energy_data", engine, if_exists="replace", index=False)
     df_api.to_sql("petroleum_prices", engine, if_exists="replace", index=False)
     print("✅ Datos cargados en PostgreSQL.")
