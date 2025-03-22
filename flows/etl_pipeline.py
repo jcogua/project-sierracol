@@ -3,16 +3,18 @@ import pandas as pd
 import requests
 import sqlalchemy
 import yaml
+import os
 
 @task
 def extract_excel():
-    df = pd.read_excel("owid-energy-data.xlsx")
+    df = pd.read_excel("data/owid-energy-data.xlsx")
     print(f"✅ Extraídos {len(df)} registros desde Excel.")
     return df
 
 @task
 def extract_api():
-    url = "https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=iL6BgeyzYTbDmd1rD2micIhjshFcmT4YzivzANZo&data[0]=value&frequency=daily&start=2023-01-01"
+    api_key = os.getenv("API_KEY")
+    url = f"https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key={api_key}&data[0]=value&frequency=daily&start=2023-01-01"
     response = requests.get(url)
     data = response.json()
     df = pd.DataFrame(data['response']['data'])
@@ -30,12 +32,8 @@ def transform_data(df_excel, df_api):
 
 @task
 def load_to_postgres(df_excel, df_api):
-    with open('config/database.yaml', 'r') as file:
-        config = yaml.safe_load(file)
-    pg = config['postgresql']
-    engine = sqlalchemy.create_engine(
-        f"postgresql://{pg['user']}:{pg['password']}@{pg['host']}:{pg['port']}/{pg['database']}"
-    )
+    db_url = os.getenv("DATABASE_URL")
+    engine = sqlalchemy.create_engine(db_url)
     df_excel.to_sql("energy_data", engine, if_exists="replace", index=False)
     df_api.to_sql("petroleum_prices", engine, if_exists="replace", index=False)
     print("✅ Datos cargados en PostgreSQL.")

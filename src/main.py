@@ -1,14 +1,9 @@
-import prefect
-from core import DATABASE_URL
-from prefect import flow
-from extraction.api_extraction import extract_api_data
-from extraction.opendata_extraction import extract_open_data
+import os
 
-@flow(name="Main Pipeline Flow")
-def main_pipeline():
-    api_data = extract_api_data()
-    open_data = extract_open_data()
-    # Aquí puedes agregar transformaciones y carga a la base de datos
+DB_URL = os.getenv("DB_URL")
+API_KEY = os.getenv("API_KEY")
+
+from flows.etl_pipeline import run_pipeline
 
 if __name__ == "__main__":
-    main_pipeline()
+    run_pipeline(DB_URL, API_KEY)
