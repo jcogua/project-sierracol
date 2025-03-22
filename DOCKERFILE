@@ -1,20 +1,12 @@
 # Dockerfile
 FROM python:3.11-slim
 
-# Evitar buffer en los logs
 ENV PYTHONUNBUFFERED=1
-
-# Crear directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos de requerimientos
 COPY requirements.txt .
-
-# Instalar las dependencias
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copiar el código fuente
 COPY . .
 
-# Comando por defecto (puede ser modificado)
-CMD ["bash"]
+CMD ["python", "scripts/main.py"]
