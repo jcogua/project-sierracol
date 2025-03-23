@@ -2,7 +2,7 @@ from prefect import flow, task
 import pandas as pd
 import requests
 import sqlalchemy
-import DATABASE_URL, API_KEY, API_BASE_URL, DATE
+from core import DATABASE_URL, API_KEY, API_BASE_URL, DATE
 
 # Validar que las variables de entorno estén cargadas
 if not DATABASE_URL:
