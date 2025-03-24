@@ -16,8 +16,13 @@ def extract_api():
         url = f"{API_BASE_URL}?api_key={API_KEY}&frequency=daily"
         response = requests.get(url)
         response.raise_for_status()
-        df = pd.DataFrame(response.json()["data"])
-        logger.info(f"Extracted {len(df)} rows from API")
+        response_json = response.json()
+        logger.info(f"API response keys: {response_json.keys()}")
+        if "response" not in response_json or "data" not in response_json["response"]:
+            raise ValueError(f"No se encontró la clave 'response.data' en la respuesta: {response_json}")
+        else:
+            df = pd.DataFrame(response.json()["response"]["data"])
+            logger.info(f"Extracted {len(df)} rows from API")
         return df
     except Exception as e:
         logger.error(f"Error during API extraction: {e}")
