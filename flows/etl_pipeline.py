@@ -1,5 +1,5 @@
 from prefect import flow, task
-from prefect.schedules import CronSchedule
+from prefect.server.schemas.schedules import CronSchedule
 from prefect.blocks.notifications import SlackWebhook
 import pandas as pd
 import requests
