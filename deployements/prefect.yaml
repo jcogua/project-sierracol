@@ -15,7 +15,7 @@ pull:
 deployments:
   - name: prod-deployment
     flow_name: flow_sierraCol
-    entrypoint: ../flows/flow.py:flow
+    entrypoint: ../flows/flow.py:build_etl_pipeline
     schedule:
       cron: "0 2 * * *"
       timezone: "UTC"
