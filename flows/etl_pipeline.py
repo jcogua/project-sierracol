@@ -50,7 +50,7 @@ def transform_data(df_api, df_excel):
 def load_to_postgres(df_api, df_excel):
     logger = get_run_logger()
     try:
-        engine = create_engine(DATABASE_URL, connect_args={"ssl": ssl.create_default_context(cafile="data/ca.pem")})
+        engine = create_engine(DATABASE_URL)
         df_api.to_sql("petroleum_prices", engine, if_exists="append", index=False)
         df_excel.to_sql("energy_metrics", engine, if_exists="append", index=False)
         with engine.connect() as conn:
