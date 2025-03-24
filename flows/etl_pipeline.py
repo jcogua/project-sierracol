@@ -99,8 +99,12 @@ def load_to_postgres(df_api, df_excel):
 
 @flow(name="Energy-Petroleum-Pipeline")
 def etl_pipeline():
-    df_api = extract_api()
-    df_excel = extract_excel()
+    df_api_future = extract_api.submit()
+    df_excel_future = extract_excel.submit()
+
+    df_api = df_api_future.result()
+    df_excel = df_excel_future.result()
+    
     df_api_clean, df_excel_clean = transform_data(df_api, df_excel)
     load_to_postgres(df_api_clean, df_excel_clean)
 
