@@ -9,7 +9,7 @@ build:
 
 pull:
   - prefect.deployments.steps.git_clone:
-      repository: "https://github.com/tu_usuario/tu_repo.git"
+      repository: "https://github.com/jcogua/project-sierracol"
       branch: "main"
 
 deployments:

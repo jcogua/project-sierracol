@@ -4,7 +4,6 @@ from prefect.server.schemas.schedules import CronSchedule
 from prefect.blocks.notifications import SlackWebhook
 import pandas as pd
 import requests
-import ssl
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 from core import DATABASE_URL, API_KEY, API_BASE_URL
@@ -22,7 +21,6 @@ def extract_api():
             raise ValueError(f"No se encontró la clave 'response.data' en la respuesta: {response_json}")
         else:
             df = pd.DataFrame(response.json()["response"]["data"])
-            print(df)
             logger.info(f"Extracted {len(df)} rows from API")
         return df
     except Exception as e:
@@ -34,7 +32,6 @@ def extract_excel():
     logger = get_run_logger()
     try:
         df_excel = pd.read_excel("data/owid-energy-data.xlsx")
-        print(df)
         logger.info(f"Extracted {len(df_excel)} rows from Excel")
         return df_excel
     except Exception as e:
@@ -43,9 +40,27 @@ def extract_excel():
 
 @task(log_prints=True)
 def transform_data(df_api, df_excel):
-    df_api["date"] = pd.to_datetime(df_api["period"])
+    # API data transformations
+    df_api = df_api.rename(columns={'period': 'date', 'value': 'price_usd_per_barrel'})
+    df_api["date"] = pd.to_datetime(df_api["date"])
+    df_api["price_usd_per_barrel"] = pd.to_numeric(df_api["price_usd_per_barrel"], errors='coerce')
     df_api = df_api[df_api["date"] >= "2014-01-01"]
+    df_api = df_api.drop_duplicates(subset=["date"])
+    df_api = df_api.sort_values("date").reset_index(drop=True)
+    df_api["year"] = df_api["date"].dt.year
+    df_api["month"] = df_api["date"].dt.month
+    df_api["week_of_year"] = df_api["date"].dt.isocalendar().week
+    df_api["data_source"] = "EIA_API"
+    df_api["batch_run_date"] = pd.Timestamp.now().normalize()
+    
+    # Excel data cleaning
     df_excel = df_excel[df_excel["year"] >= 2000].dropna(subset=["country"])
+    df_excel = df_excel.rename(columns=str.lower)
+    df_excel = df_excel.drop_duplicates()
+    numeric_cols = df_excel.select_dtypes(include=['float64', 'int64']).columns
+    df_excel[numeric_cols] = df_excel[numeric_cols].fillna(0)
+    df_excel["data_source"] = "OWID"
+    df_excel["batch_run_date"] = pd.Timestamp.now().normalize()
     return df_api, df_excel
 
 @task(log_prints=True)
