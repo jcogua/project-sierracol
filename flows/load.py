@@ -1,7 +1,7 @@
 from prefect import task, get_run_logger
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
-from .config import DATABASE_URL
+from core import DATABASE_URL
 from .notifications import notify_slack
 
 @task(log_prints=True)

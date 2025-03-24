@@ -1,16 +1,16 @@
 import pandas as pd
 import requests
 from prefect import task, get_run_logger
-from prefect import task_input_hash
+from prefect.tasks import task_input_hash
 from datetime import timedelta
-from .config import API_BASE_URL, API_KEY
-from .notifications import notify_slack
+from core import API_BASE_URL, API_KEY, DATE
+from flows.notifications import notify_slack
 
 @task(retries=3, retry_delay_seconds=30, log_prints=True, cache_key_fn=task_input_hash, cache_expiration=timedelta(minutes=10))
 def extract_api():
     logger = get_run_logger()
     try:
-        url = f"{API_BASE_URL}?api_key={API_KEY}&frequency=daily&data[0]=value&start=2023-01-01"
+        url = f"{API_BASE_URL}?api_key={API_KEY}&frequency=daily&data[0]=value&start={DATE}"
         response = requests.get(url)
         response.raise_for_status()
         data_records = response.json()['response']['data']

@@ -1,9 +1,9 @@
 from prefect import flow
 from prefect.deployments import Deployment
 from prefect.server.schemas.schedules import CronSchedule
-from .extract import extract_api, extract_excel
-from .transform import transform_data
-from .load import load_to_postgres
+from flows.extract import extract_api, extract_excel
+from flows.transform import transform_data
+from flows.load import load_to_postgres
 
 def build_etl_pipeline():
     @flow(name="Energy-Petroleum-Pipeline")
