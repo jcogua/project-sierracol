@@ -12,7 +12,7 @@ from core import DATABASE_URL, API_KEY, API_BASE_URL
 def extract_api():
     logger = get_run_logger()
     try:
-        url = f"{API_BASE_URL}?api_key={API_KEY}&frequency=daily&start=2023-01-01"
+        url = f"{API_BASE_URL}?api_key={API_KEY}&data[0]=value&frequency=daily&start=2023-01-01"
         response = requests.get(url)
         response.raise_for_status()
         response_json = response.json()
