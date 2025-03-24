@@ -8,6 +8,7 @@ from flows.notifications import notify_slack
 
 @task(retries=3, retry_delay_seconds=30, log_prints=True, cache_key_fn=task_input_hash, cache_expiration=timedelta(minutes=10))
 def extract_api():
+    print(" desde def extract_api()")
     logger = get_run_logger()
     try:
         url = f"{API_BASE_URL}?api_key={API_KEY}&frequency=daily&data[0]=value&start={DATE}"
@@ -33,6 +34,7 @@ def extract_api():
 
 @task(log_prints=True, cache_key_fn=task_input_hash, cache_expiration=timedelta(minutes=10))
 def extract_excel():
+    print(" desde extract_excel")
     logger = get_run_logger()
     try:
         df_excel = pd.read_excel("data/owid-energy-data.xlsx")
