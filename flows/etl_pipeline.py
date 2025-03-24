@@ -22,6 +22,7 @@ def extract_api():
             raise ValueError(f"No se encontró la clave 'response.data' en la respuesta: {response_json}")
         else:
             df = pd.DataFrame(response.json()["response"]["data"])
+            print(df)
             logger.info(f"Extracted {len(df)} rows from API")
         return df
     except Exception as e:
@@ -33,6 +34,7 @@ def extract_excel():
     logger = get_run_logger()
     try:
         df_excel = pd.read_excel("data/owid-energy-data.xlsx")
+        print(df)
         logger.info(f"Extracted {len(df_excel)} rows from Excel")
         return df_excel
     except Exception as e:
@@ -42,7 +44,7 @@ def extract_excel():
 @task(log_prints=True)
 def transform_data(df_api, df_excel):
     df_api["date"] = pd.to_datetime(df_api["period"])
-    df_api = df_api[df_api["date"] >= "2000-01-01"]
+    df_api = df_api[df_api["date"] >= "2014-01-01"]
     df_excel = df_excel[df_excel["year"] >= 2000].dropna(subset=["country"])
     return df_api, df_excel
 
