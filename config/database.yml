@@ -1,6 +1,0 @@
-postgresql:
-  host: pg-1c93fe4-db-migration-1-glob.f.aivencloud.com
-  port: 11939
-  user: avnadmin
-  password: AVNS_0folx9S9XlMEVFLn2IF
-  database: defaultdb
