@@ -40,6 +40,8 @@ def extract_excel():
 
 @task(log_prints=True)
 def transform_data(df_api, df_excel):
+    print('Columnas API')
+    print(df_api.columns)
     # API data transformations
     df_api = df_api.rename(columns={'period': 'date', 'value': 'price_usd_per_barrel'})
     df_api["date"] = pd.to_datetime(df_api["date"])
