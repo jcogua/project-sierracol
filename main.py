@@ -1,4 +1,4 @@
-from flows.etl_pipeline import etl_pipeline
+from flows.etl_pipeline import flow
 
 if __name__ == "__main__":
-    etl_pipeline()
+    flow()
