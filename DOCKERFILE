@@ -15,4 +15,4 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . .
 
 # Comando por defecto: ejecuta el punto de entrada
-CMD ["python", "src/main.py"]
+CMD ["python", "main.py"]
