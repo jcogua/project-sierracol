@@ -2,10 +2,10 @@ from prefect import flow, task, get_run_logger
 from prefect.deployments import Deployment
 from prefect.server.schemas.schedules import CronSchedule
 from prefect.blocks.notifications import SlackWebhook
-import pandas as pd
-import requests
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
+import pandas as pd
+import requests
 from core import DATABASE_URL, API_KEY, API_BASE_URL
 
 @task(retries=3, retry_delay_seconds=30, log_prints=True)

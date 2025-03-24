@@ -1,6 +1,6 @@
 import pandas as pd
 from prefect import task, get_run_logger
-from .notifications import notify_slack
+from flows.notifications import notify_slack
 
 @task(log_prints=True)
 def transform_data(df_api, df_excel):

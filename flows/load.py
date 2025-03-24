@@ -2,7 +2,7 @@ from prefect import task, get_run_logger
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 from core import DATABASE_URL
-from .notifications import notify_slack
+from flows.notifications import notify_slack
 
 @task(log_prints=True)
 def load_to_postgres(df_api, df_excel):
