@@ -20,7 +20,24 @@ def extract_api():
         if "response" not in response_json or "data" not in response_json["response"]:
             raise ValueError(f"No se encontró la clave 'response.data' en la respuesta: {response_json}")
         else:
-            df = pd.DataFrame(response.json()["response"]["data"])
+            data_records = response_json['response']['data']
+            clean_records = []
+            for record in data_records:
+                clean_record = {k: record.get(k, None) for k in [
+                    'period', 'duoarea', 'area-name', 'product', 'product-name',
+                    'process', 'process-name', 'series', 'series-description',
+                    'value', 'units'
+                ]}
+                clean_records.append(clean_record)
+
+            df = pd.DataFrame.from_records(clean_records)
+
+            missing_value_count = df['value'].isnull().sum()
+            missing_units_count = df['units'].isnull().sum()
+
+            if missing_value_count > 0 or missing_units_count > 0:
+                logger.warning(f"Se encontraron {missing_value_count} registros sin 'value' y {missing_units_count} registros sin 'units'")
+                
             logger.info(f"Extracted {len(df)} rows from API")
         return df
     except Exception as e:
