@@ -10,7 +10,7 @@ build:
 pull:
   - prefect.deployments.steps.git_clone:
       repository: "https://github.com/jcogua/project-sierracol"
-      branch: "main"
+      branch: "develop"
 
 deployments:
   - name: prod-deployment
