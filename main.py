@@ -1,5 +1,4 @@
-from flows.etl_pipeline import flow
+from flows.flow import build_etl_pipeline
 
 if __name__ == "__main__":
-    print("Entra a Main")
-    flow()
+    build_etl_pipeline()
