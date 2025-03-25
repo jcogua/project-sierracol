@@ -13,7 +13,7 @@ def load_to_postgres(df_api, df_excel, df_csv):
         notify_slack(f"✅ Database load successful - petroleum_prices")
         df_excel.to_sql("energy_metrics", engine, if_exists="append", index=False)
         notify_slack(f"✅ Database load successful - energy_metrics")
-        df_csv.to_sql("geogist", engine, if_exists="append", index=False)
+        df_csv.to_sql("geogist", engine, if_exists="fail", index=False)
         notify_slack(f"✅ Database load successful - GEOGIST")
         with engine.connect() as conn:
             conn.execute(text("CREATE INDEX IF NOT EXISTS idx_energy_country ON energy_metrics (country)"))
