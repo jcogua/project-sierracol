@@ -1,10 +1,12 @@
 from prefect import flow
 from prefect.deployments import Deployment
 from prefect.server.schemas.schedules import CronSchedule
-from extract import extract_api, extract_excel, extract_geogist
-from transform import transform_api_data, transform_excel_data, transform_csv_data
-from load import load_to_postgres
+from flows.extract import extract_api, extract_excel, extract_geogist
+from flows.transform import transform_api_data, transform_excel_data, transform_csv_data
+from flows.load import load_to_postgres
 
+
+# ETL
 @flow(name="Energy-Petroleum-Pipeline")
 def etl_pipeline():
     df_api_future = extract_api.submit()
