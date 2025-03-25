@@ -45,9 +45,3 @@ def transform_excel_data(df_excel):
     except Exception as e:
         notify_slack(f"❌ Error in Excel transformation: {e}")
         raise
-
-@task(log_prints=True)
-def transform_data(df_api, df_excel):
-    transformed_api = transform_api_data(df_api)
-    transformed_excel = transform_excel_data(df_excel)
-    return transformed_api, transformed_excel

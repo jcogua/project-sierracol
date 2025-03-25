@@ -2,7 +2,7 @@ from prefect import flow
 from prefect.deployments import Deployment
 from prefect.server.schemas.schedules import CronSchedule
 from flows.extract import extract_api, extract_excel, extract_geogist
-from flows.transform import transform_data
+from flows.transform import transform_api_data, transform_excel_data
 from flows.load import load_to_postgres
 
 @flow(name="Energy-Petroleum-Pipeline")
@@ -14,8 +14,10 @@ def etl_pipeline():
     df_api = df_api_future.result()
     df_excel = df_excel_future.result()
     df_csv = df_csv_future.result()
-
-    df_api_clean, df_excel_clean = transform_data(df_api, df_excel)
+    
+    df_api_clean = transform_api_data(df_api)
+    df_excel_clean = transform_excel_data(df_excel)
+    
     load_to_postgres(df_api_clean, df_excel_clean, df_csv)
 
 if __name__ == "__main__":
