@@ -45,3 +45,16 @@ def transform_excel_data(df_excel):
     except Exception as e:
         notify_slack(f"❌ Error in Excel transformation: {e}")
         raise
+
+
+
+@task(log_prints=True)
+def transform_csv_data(df_csv):
+    logger = get_run_logger()
+    try:
+        df_csv = df_csv.applymap(lambda x: x.replace('"', '') if isinstance(x, str) else x)
+        logger.info("CSV data transformation completed.")
+        return df_csv
+    except Exception as e:
+        notify_slack(f"❌ CSV data transformation completed: {e}")
+        raise
