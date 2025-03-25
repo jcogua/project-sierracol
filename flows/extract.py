@@ -4,7 +4,7 @@ from prefect import task, get_run_logger
 from prefect.tasks import task_input_hash
 from datetime import timedelta
 from core import API_BASE_URL, API_KEY, DATE
-from flows.notifications import notify_slack
+from notifications import notify_slack
 
 @task(log_prints=True)
 def extract_api():
@@ -36,6 +36,9 @@ def extract_excel():
     logger = get_run_logger()
     try:
         df_excel = pd.read_excel("data/owid-energy-data.xlsx")
+        
+        
+        
         logger.info(f"Extracted {len(df_excel)} rows from owid-energy-data.xlsx")
         return df_excel
     except Exception as e:
