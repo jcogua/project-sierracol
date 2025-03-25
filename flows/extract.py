@@ -21,14 +21,14 @@ def extract_api():
             'value', 'units']} for record in data_records])
 
         if df['value'].isnull().any() or df['units'].isnull().any():
-            msg = "Se encontraron registros con 'value' o 'units' nulos."
+            msg = "Found records with null 'value' or 'units'."
             logger.warning(msg)
             notify_slack(msg)
 
-        logger.info(f"Extracted {len(df)} rows from API")
+        logger.info(f"Extracted {len(df)} rows from {API_BASE_URL}")
         return df
     except Exception as e:
-        notify_slack(f"❌ Error API extraction: {e}")
+        notify_slack(f"❌ Error in API extraction: {e}")
         raise
 
 @task(log_prints=True)
@@ -36,8 +36,19 @@ def extract_excel():
     logger = get_run_logger()
     try:
         df_excel = pd.read_excel("data/owid-energy-data.xlsx")
-        logger.info(f"Extracted {len(df_excel)} rows from Excel")
+        logger.info(f"Extracted {len(df_excel)} rows from owid-energy-data.xlsx")
         return df_excel
     except Exception as e:
-        notify_slack(f"❌ Error Excel extraction: {e}")
+        notify_slack(f"❌ Error in Excel extraction: {e}")
+        raise
+
+@task(log_prints=True)
+def extract_geogist():
+    logger = get_run_logger()
+    try:
+        df_csv = pd.read_csv("data/countries_codes_and_coordinates.csv")
+        logger.info(f"Extracted {len(df_csv)} rows from countries_codes_and_coordinates.csv")
+        return df_csv
+    except Exception as e:
+        notify_slack(f"❌ Error in CSV extraction: {e}")
         raise
