@@ -53,11 +53,16 @@ def transform_csv_data(df_csv):
     logger = get_run_logger()
     try:
         df_csv = df_csv.applymap(lambda x: x.replace('"', '').strip() if isinstance(x, str) else x)
-        df_csv.columns = (df_csv.columns
-                          .str.strip()
-                          .str.replace(' ', '_')
-                          .str.replace('-', '_')  
-                          .str.lower())    
+        column_mapping = {
+            "Country": "country",
+            "Alpha-2 code": "alpha_2_code",
+            "Alpha-3 code": "alpha_3_code",
+            "Numeric code": "numeric_code",
+			"Latitude (average)": "latitude",
+			"Longitude (average)": "longitude" 
+        } 
+        
+        df_csv = df_csv.rename(columns=column_mapping)   
         logger.info("CSV data transformation completed.")
         return df_csv
     except Exception as e:
