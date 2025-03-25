@@ -1,7 +1,6 @@
 import pandas as pd
 import requests
 from prefect import task, get_run_logger
-from prefect.tasks import task_input_hash
 from datetime import timedelta
 from core import API_BASE_URL, API_KEY, DATE
 from notifications import notify_slack
