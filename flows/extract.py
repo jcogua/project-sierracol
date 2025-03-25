@@ -1,6 +1,7 @@
 import pandas as pd
 import requests
 from prefect import task, get_run_logger
+from datetime import timedelta
 from core import API_BASE_URL, API_KEY, DATE
 from flows.notifications import notify_slack
 
@@ -11,8 +12,7 @@ def extract_api():
         url = f"{API_BASE_URL}?api_key={API_KEY}&frequency=daily&data[0]=value&start={DATE}"
         response = requests.get(url)
         response.raise_for_status()
-        data_records = response.json()['response']['
-                                                   ']
+        data_records = response.json()['response']['data']
 
         df = pd.DataFrame([{k: record.get(k, None) for k in [
             'period', 'duoarea', 'area-name', 'product', 'product-name',
