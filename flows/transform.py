@@ -52,7 +52,7 @@ def transform_excel_data(df_excel):
 def transform_csv_data(df_csv):
     logger = get_run_logger()
     try:
-        df_csv = df_csv.applymap(lambda x: x.replace('"', '') if isinstance(x, str) else x)
+        df_csv = df_csv.applymap(lambda x: x.replace('"', '').strip() if isinstance(x, str) else x)
         df_csv.columns = (df_csv.columns
                           .str.strip()
                           .str.replace(' ', '_')
