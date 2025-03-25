@@ -24,9 +24,14 @@ def etl_pipeline():
     load_to_postgres(df_api_clean, df_excel_clean, df_csv_clean)
 
 if __name__ == "__main__":
-    etl_pipeline.deploy(
+    deployment = Deployment.build_from_flow(
+        flow=etl_pipeline,
         name="prod-deployment",
         work_pool_name="default-agent-pool",
         schedule=CronSchedule(cron="0 2 * * *", timezone="UTC"),
+        infrastructure=DockerContainer(
+            image="miusuario/mi-proyecto:latest"
+        ),
         tags=["prod"]
     )
+    deployment.apply()
