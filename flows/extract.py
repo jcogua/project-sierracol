@@ -35,9 +35,6 @@ def extract_excel():
     logger = get_run_logger()
     try:
         df_excel = pd.read_excel("data/owid-energy-data.xlsx")
-        
-        
-        
         logger.info(f"Extracted {len(df_excel)} rows from owid-energy-data.xlsx")
         return df_excel
     except Exception as e:
