@@ -6,7 +6,6 @@ from flows.notifications import notify_slack
 
 @task(log_prints=True)
 def load_to_postgres(df_api, df_excel):
-    print(" desde load_to_postgres")
     logger = get_run_logger()
     try:
         engine = create_engine(DATABASE_URL)

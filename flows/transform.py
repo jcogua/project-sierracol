@@ -4,7 +4,6 @@ from flows.notifications import notify_slack
 
 @task(log_prints=True)
 def transform_data(df_api, df_excel):
-    print(" desde transform_data")
     logger = get_run_logger()
     try:
         df_api = df_api.rename(columns={

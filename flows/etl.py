@@ -8,7 +8,6 @@ from flows.load import load_to_postgres
 def build_etl_pipeline():
     @flow(name="Energy-Petroleum-Pipeline")
     def etl_pipeline():
-        print("Entró a build_etl_pipeline")
         df_api_future = extract_api.submit()
         df_excel_future = extract_excel.submit()
 
